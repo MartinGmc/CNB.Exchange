@@ -3,14 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>Martin Šigut</Authors>
-    <Company>Algorim s.r.o.</Company>
+    <Authors>Martin Šigut,Martin Gmuca</Authors>
+    <Company></Company>
     <Description>CNB.cz Daily Exchange + Bank codes Rates .NET Standard 2.0 Library</Description>
-    <Copyright>Martin Šigut, Algorim</Copyright>
+    <Copyright>Martin Šigut, Martin Gmuca</Copyright>
     <PackageTags>CNB Exchange Rates + Bank codes</PackageTags>
-    <Version>1.2.2</Version>
-    <PackageProjectUrl>https://github.com/msigut/CNB.Exchange</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/msigut/CNB.Exchange</RepositoryUrl>
+    <Version>1.0.0</Version>
+    <PackageProjectUrl>https://github.com/MartinGmc/CNB.Exchange</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/MartinGmc/CNB.Exchange</RepositoryUrl>
     <PackageIcon>exchange.png</PackageIcon>
     <PackageIconUrl>https://raw.githubusercontent.com/msigut/CNB.Exchange/master/exchange.png</PackageIconUrl>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
