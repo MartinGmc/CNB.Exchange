@@ -1,7 +1,7 @@
 ## CNB.Exchange
 
 CNB.cz .NET Standard 2.0 Library (netstandard2.0). By [ČNB](https://www.cnb.cz) 
-- Daily Exchange Rates Uses public [plain-text API - CSV](https://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.txt)]
+- Daily Exchange Rates Uses public [plain-text API - CSV](https://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.txt)
 - Bank codes [[plain-text API - CSV](https://www.cnb.cz/cs/platebni-styk/.galleries/ucty_kody_bank/download/kody_bank_CR.csv)]
 
 Supports
