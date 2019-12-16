@@ -14,6 +14,7 @@
     <PackageIcon>exchange.png</PackageIcon>
     <PackageIconUrl>https://raw.githubusercontent.com/msigut/CNB.Exchange/master/exchange.png</PackageIconUrl>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageId>CNB-extended</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
