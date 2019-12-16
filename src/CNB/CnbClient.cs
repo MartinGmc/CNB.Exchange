@@ -21,6 +21,21 @@ namespace CNB
 		/// </summary>
 		public const string URL_BANK_CODES = "https://www.cnb.cz/cs/platebni-styk/.galleries/ucty_kody_bank/download/kody_bank_CR.csv";
 
+		/// <summary>
+		/// CNB URL for Exchange rates other countries
+		/// </summary>
+		public const string URL_EXCHANGE_OTHER = "https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-ostatnich-men/kurzy-ostatnich-men/kurzy.txt";
+
+		/// <summary>
+		/// CNB URL for Exchange rates english
+		/// </summary>
+		public const string URL_EXCHANGE_EN = "https://www.cnb.cz/en/financial-markets/foreign-exchange-market/central-bank-exchange-rate-fixing/central-bank-exchange-rate-fixing/daily.txt";
+
+		/// <summary>
+		/// CNB URL for Exchange rates other english
+		/// </summary>
+		public const string URL_EXCHANGE_OTHER_EN = "https://www.cnb.cz/en/financial-markets/foreign-exchange-market/fx-rates-of-other-currencies/fx-rates-of-other-currencies/fx_rates.txt";
+
 		#region DI
 
 		private readonly IHttpClientFactory _clientFactory;
@@ -35,25 +50,39 @@ namespace CNB
 		/// <summary>
 		/// get exchange rate by currency code
 		/// </summary>
-		public async Task<decimal> ExchangeRateCode(CurrencyCode code, DateTime? date = null)
+		public async Task<decimal> ExchangeRateCode(string code, DateTime? date = null,bool searchOther = false)
 		{
 			var all = await ExchangeRateAll(date);
 
-			var item = all.FirstOrDefault(x => x.CurrencyCode == code);
+			var item = all.FirstOrDefault(x => x.Code == code);
 			if (item == null)
+			{
+				if (!searchOther)
 				throw new ArgumentException($"Cannot find: '{code}'.");
-
+				else
+				{
+					var other = await ExchangeRateOther(date);
+					item = other.FirstOrDefault(x => x.Code == code);
+					if (item == null) throw new ArgumentException($"Cannot find: '{code}'.");
+				}
+			}
 			return item.Rate;
 		}
 
 		/// <summary>
 		/// get all exchange rates for date
 		/// </summary>
-		public async Task<IReadOnlyCollection<ExchangeRate>> ExchangeRateAll(DateTime? date = null)
+		public async Task<IReadOnlyCollection<ExchangeRate>> ExchangeRateAll(DateTime? date = null, string lang = null)
 		{
 			var client = _clientFactory.CreateClient("cnb");
 
-			var url = $"{URL_EXCHANGE}?date={(date ?? DateTime.Today).ToString("dd.MM.yyyy")}";
+			var urlConst = URL_EXCHANGE;
+			if (lang == "CS")
+				urlConst = URL_EXCHANGE;
+			if (lang == "EN")
+				urlConst = URL_EXCHANGE_EN;
+
+			var url = $"{urlConst}?date={(date ?? DateTime.Today).ToString("dd.MM.yyyy")}";
 			var content = await client.GetStringAsync(url);
 
 			// remove first 1 line ('28.12.2018 #249')
@@ -65,16 +94,49 @@ namespace CNB
 			using (var csv = new CsvReader(reader))
 			{
 				csv.Configuration.Delimiter = "|";
+				if (lang == "EN")
+					csv.Configuration.RegisterClassMap<ExchangeRateMapperEN>();
+				else
 				csv.Configuration.RegisterClassMap<ExchangeRateMapper>();
 
 				result = csv.GetRecords<ExchangeRate>().ToArray();
 
-				// parse CurrencyCode
-				foreach (var item in result)
-				{
-					if (Enum.TryParse<CurrencyCode>(item.Code, out var temp))
-						item.CurrencyCode = temp;
-				}
+			}
+			return result;
+		}
+
+		/// <summary>
+		/// Get all exchange rates for date for other countries
+		/// </summary>
+		public async Task<IReadOnlyCollection<ExchangeRate>> ExchangeRateOther(DateTime? date = null, string lang = null)
+		{
+			var client = _clientFactory.CreateClient("cnb");
+
+			var urlConst = URL_EXCHANGE_OTHER;
+			if (lang == "CS")
+				urlConst = URL_EXCHANGE_OTHER;
+			if (lang == "EN")
+				urlConst = URL_EXCHANGE_OTHER_EN;
+
+			var url = $"{urlConst}?year={(date ?? DateTime.Today).Year.ToString()}&month={(date ?? DateTime.Today).Month.ToString()}";
+			var content = await client.GetStringAsync(url);
+
+			// remove first 1 line ('29 Nov 2019 #11')
+			var lines = content.Split(Environment.NewLine.ToCharArray()).Skip(1).ToArray();
+			var cleaned = string.Join(Environment.NewLine, lines);
+
+			ExchangeRate[] result = null;
+			using (var reader = new StringReader(cleaned))
+			using (var csv = new CsvReader(reader))
+			{
+				csv.Configuration.Delimiter = "|";
+				if (lang == "EN")
+					csv.Configuration.RegisterClassMap<ExchangeRateMapperEN>();
+				else
+					csv.Configuration.RegisterClassMap<ExchangeRateMapper>();
+
+				result = csv.GetRecords<ExchangeRate>().ToArray();
+								
 			}
 			return result;
 		}

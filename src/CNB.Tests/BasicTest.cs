@@ -29,8 +29,49 @@ namespace CNB.Tests
 			Assert.Contains(rates, x => !string.IsNullOrEmpty(x.CurrencyName));
 			Assert.Contains(rates, x => x.Amount > 0);
 			Assert.Contains(rates, x => !string.IsNullOrEmpty(x.Code));
-			Assert.Contains(rates, x => x.CurrencyCode == CurrencyCode.EUR);
-			Assert.Contains(rates, x => x.CurrencyCode == CurrencyCode.USD);
+			Assert.Contains(rates, x => x.Code == "EUR");
+			Assert.Contains(rates, x => x.Code == "USD");
+			Assert.Contains(rates, x => x.Rate > 0);
+		}
+
+		[Fact]
+		public async Task TestExchangeRateEN()
+		{
+			var rates = await _cnb.ExchangeRateAll(null,"EN");
+
+			Assert.NotEmpty(rates);
+			Assert.Contains(rates, x => !string.IsNullOrEmpty(x.Country));
+			Assert.Contains(rates, x => !string.IsNullOrEmpty(x.CurrencyName));
+			Assert.Contains(rates, x => x.Amount > 0);
+			Assert.Contains(rates, x => !string.IsNullOrEmpty(x.Code));
+			Assert.Contains(rates, x => x.Code == "EUR");
+			Assert.Contains(rates, x => x.Code == "USD");
+			Assert.Contains(rates, x => x.Rate > 0);
+		}
+
+		[Fact]
+		public async Task TestExchangeRateOther()
+		{
+			var rates = await _cnb.ExchangeRateOther();
+
+			Assert.NotEmpty(rates);
+			Assert.Contains(rates, x => !string.IsNullOrEmpty(x.Country));
+			Assert.Contains(rates, x => !string.IsNullOrEmpty(x.CurrencyName));
+			Assert.Contains(rates, x => x.Amount > 0);
+			Assert.Contains(rates, x => !string.IsNullOrEmpty(x.Code));
+			Assert.Contains(rates, x => x.Rate > 0);
+		}
+
+		[Fact]
+		public async Task TestExchangeRateOtherEN()
+		{
+			var rates = await _cnb.ExchangeRateOther(null,"EN");
+
+			Assert.NotEmpty(rates);
+			Assert.Contains(rates, x => !string.IsNullOrEmpty(x.Country));
+			Assert.Contains(rates, x => !string.IsNullOrEmpty(x.CurrencyName));
+			Assert.Contains(rates, x => x.Amount > 0);
+			Assert.Contains(rates, x => !string.IsNullOrEmpty(x.Code));
 			Assert.Contains(rates, x => x.Rate > 0);
 		}
 
@@ -49,8 +90,8 @@ namespace CNB.Tests
 		[Fact]
 		public async Task TestExchangeRateCode()
 		{
-			Assert.True(await _cnb.ExchangeRateCode(CurrencyCode.EUR) > 20m);
-			Assert.True(await _cnb.ExchangeRateCode(CurrencyCode.USD) > 20m);
+			Assert.True(await _cnb.ExchangeRateCode("EUR") > 20m);
+			Assert.True(await _cnb.ExchangeRateCode("USD") > 20m);
 		}
 
 		[Fact]

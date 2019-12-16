@@ -28,11 +28,7 @@ namespace CNB
 		/// exchange rate
 		/// </summary>
 		public decimal Rate { get; set; }
-
-		/// <summary>
-		/// currency code
-		/// </summary>
-		public CurrencyCode? CurrencyCode { get; set; }
+				
 	}
 
 	/// <remarks>
@@ -50,6 +46,22 @@ namespace CNB
 			Map(m => m.Rate)
 				.Index(i++)
 				.TypeConverterOption.CultureInfo(new CultureInfo("cs-CZ"))
+				.TypeConverterOption.NumberStyles(NumberStyles.AllowDecimalPoint);
+		}
+	}
+
+	internal class ExchangeRateMapperEN : ClassMap<ExchangeRate>
+	{
+		public ExchangeRateMapperEN()
+		{
+			var i = 0;
+			Map(m => m.Country).Index(i++);
+			Map(m => m.CurrencyName).Index(i++);
+			Map(m => m.Amount).Index(i++);
+			Map(m => m.Code).Index(i++);
+			Map(m => m.Rate)
+				.Index(i++)
+				.TypeConverterOption.CultureInfo(new CultureInfo("en-US"))
 				.TypeConverterOption.NumberStyles(NumberStyles.AllowDecimalPoint);
 		}
 	}
