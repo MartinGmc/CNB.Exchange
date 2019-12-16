@@ -40,7 +40,7 @@ await _cnb.ExchangeRateAll(date);
 // return all Exchange rates on given date in English
 await _cnb.ExchangeRateAll(date, "EN");
 
-oter = more than 120 countries from other country list of CNB
+//oter = more than 120 countries from other country list of CNB
 // return other Exchange rates for acual date
 await _cnb.ExchangeRateOther();
 
